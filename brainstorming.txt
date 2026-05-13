@@ -1,0 +1,7 @@
+A SaaS dashboard that doesn't just show your metrics but uses AI to predicts where you're heading, flags what's wrong, and tells you exactly what to do about it.
+
+routes/   → waiter    (takes the order, delivers the plate)
+services/ → kitchen   (actually prepares the food)
+data/     → fridge    (where ingredients are stored)
+
+Services never know about HTTP. Routes never know about data.
