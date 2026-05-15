@@ -1,5 +1,0 @@
-A SaaS dashboard that doesn't just show your metrics but uses AI to predicts where you're heading, flags what's wrong, and tells you exactly what to do about it.
-
-routes/   →  (takes the order, delivers the plate)
-services/ →  (actually prepares the food)
-data/     →  (where ingredients are stored)

@@ -24,3 +24,9 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# SQLite database
+*.db
+*.sqlite3
+
+brainstorming.txt
