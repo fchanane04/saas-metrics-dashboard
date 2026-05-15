@@ -3,5 +3,3 @@ A SaaS dashboard that doesn't just show your metrics but uses AI to predicts whe
 routes/   →  (takes the order, delivers the plate)
 services/ →  (actually prepares the food)
 data/     →  (where ingredients are stored)
-
-Services never know about HTTP. Routes never know about data.
