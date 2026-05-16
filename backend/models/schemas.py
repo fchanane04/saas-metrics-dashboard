@@ -5,6 +5,36 @@ from sqlalchemy import Column, Integer, String, Float
 from database import Base
 
 
+# USER MODEL
+class UserModel(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    created_at = Column(String)
+
+# ── User Pydantic Schemas ──
+class UserRegister(BaseModel):
+    email: str
+    password: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 #sqlalchemy database models => DB tables
 class CustomerModel(Base):
     __tablename__ = "customers"
