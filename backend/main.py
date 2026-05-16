@@ -1,23 +1,41 @@
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
+from database import Base, engine
 from routes.metrics.data import router as data_router
 from routes.metrics.revenue import router as revenue_router
-from database import Base, engine
-
 from routes.auth import router as auth_router
 
-#create all the tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 app.include_router(auth_router, prefix="/api/auth")
 app.include_router(data_router, prefix="/api")
-app.include_router(revenue_router, prefix="/metrics/revenue")
+app.include_router(revenue_router, prefix="/api/metrics/revenue")
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to saas app"}
+    return {"message": "SaaS Metrics API is running 🚀"}
 
 @app.get("/health")
 def health():
-    return {"status": "Good"}
+    return {"status": "ok"}
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="SaaS Metrics API",
+        version="1.0.0",
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+        }
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi

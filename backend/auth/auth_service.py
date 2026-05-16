@@ -1,19 +1,16 @@
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy.orm import Session
 from datetime import datetime
 from models.schemas import UserModel
 from auth.jwt import create_access_token
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
 
 def register_user(db: Session, email: str, password: str):
-    # Check if email already exists
     existing = db.query(UserModel).filter(UserModel.email == email).first()
     if existing:
         return None
