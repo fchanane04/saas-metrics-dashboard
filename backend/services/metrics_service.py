@@ -3,6 +3,10 @@ from fastapi import HTTPException
 from pathlib import Path
 from config.settings import settings
 
+from sqlalchemy.orm import Session
+from models.schemas import CustomerModel, SubscriptionModel, TransactionModel, EventModel
+
+'''
 #reusable function
 def load_json(filename: str):
     try:
@@ -26,3 +30,16 @@ def get_transactions():
 
 def get_events():
     return load_json("events.json")
+'''
+
+def get_customers(db: Session):
+    return db.query(CustomerModel).all()
+
+def get_subscriptions(db: Session):
+    return db.query(SubscriptionModel).all()
+
+def get_transactions(db: Session):
+    return db.query(TransactionModel).all()
+
+def get_events(db: Session):
+    return db.query(EventModel).all()
