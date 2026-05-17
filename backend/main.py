@@ -15,7 +15,7 @@ app.include_router(revenue_router, prefix="/api/metrics/revenue")
 
 @app.get("/")
 def root():
-    return {"message": "SaaS Metrics API is running 🚀"}
+    return {"message": "SaaS Metrics API is running"}
 
 @app.get("/health")
 def health():
@@ -35,6 +35,11 @@ def custom_openapi():
             "scheme": "bearer",
         }
     }
+    #Apply security to all endpoints, send token with every request
+    for path in openapi_schema["paths"].values():
+        for method in path.values():
+            method["security"] = [{"BearerAuth": []}]
+
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
