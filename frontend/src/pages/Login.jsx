@@ -1,16 +1,123 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
-function Login() {
+export default function Login() {
   const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleLogin = async () => {
+    setError('')
+    setLoading(true)
+    try {
+      const res = await axios.post('http://127.0.0.1:8000/api/auth/login', { email, password })
+      localStorage.setItem('token', res.data.access_token)
+      navigate('/dashboard')
+    } catch (err) {
+      setError('Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div>
-      <h1>Login</h1>
-      <button onClick={() => navigate('/register')}>
-        Don't have an account? Register
-      </button>
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa', fontFamily: "'Inter', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        .form-input:focus { border-color: #1a6b3c !important; background: #fff !important; outline: none; }
+        .login-btn:hover { background: #155c32 !important; }
+      `}</style>
+
+      <div style={{ display: 'flex', width: '100%', maxWidth: 900, minHeight: 520, borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.1)' }}>
+
+        {/* Left Panel */}
+        <div style={{ width: '45%', background: '#1a6b3c', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2.5rem', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', width: 300, height: 300, background: 'rgba(255,255,255,0.05)', borderRadius: '50%', top: -100, right: -80 }} />
+          <div style={{ position: 'absolute', width: 200, height: 200, background: 'rgba(255,255,255,0.05)', borderRadius: '50%', bottom: -60, left: -40 }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '3rem' }}>
+            <div style={{ width: 28, height: 28, background: 'rgba(255,255,255,0.2)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <rect x="2" y="2" width="5" height="5" rx="1.5" fill="white"/>
+                <rect x="9" y="2" width="5" height="5" rx="1.5" fill="white" opacity="0.6"/>
+                <rect x="2" y="9" width="5" height="5" rx="1.5" fill="white" opacity="0.6"/>
+                <rect x="9" y="9" width="5" height="5" rx="1.5" fill="white"/>
+              </svg>
+            </div>
+            <span style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>SaaS Metrics</span>
+          </div>
+
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', lineHeight: 1.2, marginBottom: '1rem' }}>Welcome back</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, marginBottom: '2rem' }}>
+            Sign in to access your dashboard and track your SaaS metrics in real time.
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {[['📈', 'Real-time MRR tracking'], ['🤖', 'AI-powered insights'], ['🔮', 'Revenue forecasting']].map(([icon, text]) => (
+              <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 28, height: 28, background: 'rgba(255,255,255,0.15)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{icon}</div>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 500 }}>{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Panel */}
+        <div style={{ flex: 1, background: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '2.5rem' }}>
+          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1a1a1a', marginBottom: '0.3rem' }}>Sign in</div>
+          <div style={{ fontSize: 13, color: '#888', marginBottom: '1.8rem' }}>Enter your credentials to continue</div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#444', display: 'block', marginBottom: 5 }}>Email address</label>
+            <input
+              className="form-input"
+              type="email"
+              placeholder="john@company.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={{ width: '100%', padding: '0.65rem 0.9rem', border: '1.5px solid #e5e5e5', borderRadius: 8, fontSize: 13, fontFamily: 'inherit', background: '#fafafa', transition: 'border 0.2s' }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#444' }}>Password</label>
+              <span style={{ fontSize: 11, color: '#1a6b3c', fontWeight: 500, cursor: 'pointer' }}>Forgot password?</span>
+            </div>
+            <input
+              className="form-input"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              style={{ width: '100%', padding: '0.65rem 0.9rem', border: '1.5px solid #e5e5e5', borderRadius: 8, fontSize: 13, fontFamily: 'inherit', background: '#fafafa', transition: 'border 0.2s' }}
+            />
+          </div>
+
+          {error && (
+            <div style={{ fontSize: 12, color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 7, padding: '0.5rem 0.8rem', marginBottom: '0.5rem' }}>
+              ⚠ {error}
+            </div>
+          )}
+
+          <button
+            className="login-btn"
+            onClick={handleLogin}
+            disabled={loading}
+            style={{ width: '100%', padding: '0.75rem', background: '#1a6b3c', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: '0.5rem', transition: 'background 0.2s' }}
+          >
+            {loading ? 'Signing in...' : 'Sign in →'}
+          </button>
+
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#888', marginTop: '1rem' }}>
+            Don't have an account?{' '}
+            <span onClick={() => navigate('/register')} style={{ color: '#1a6b3c', fontWeight: 600, cursor: 'pointer' }}>Create one</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
-
-export default Login
