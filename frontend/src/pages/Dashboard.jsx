@@ -82,13 +82,17 @@ export default function Dashboard() {
         <div style={{ fontSize: 10, fontWeight: 600, color: '#bbb', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0 0.5rem', marginBottom: '0.5rem' }}>Menu</div>
 
         {[
-          { icon: '▦', label: 'Dashboard', active: true },
+          { icon: '▦', label: 'Dashboard', path: '/dashboard', active: true },
           { icon: '📈', label: 'Revenue' },
-          { icon: '👥', label: 'Customers' },
+          { icon: '👥', label: 'Customers', path: '/customers' },
           { icon: '🔮', label: 'Forecast' },
           { icon: '🤖', label: 'AI Insights' },
         ].map(item => (
-          <div key={item.label} className={`menu-item ${item.active ? 'active' : ''}`}>
+          <div
+            key={item.label}
+            className={`menu-item ${item.active ? 'active' : ''}`}
+            onClick={() => navigate(item.path)}
+          >
             <span style={{ fontSize: 15, width: 18, textAlign: 'center' }}>{item.icon}</span>
             {item.label}
           </div>
