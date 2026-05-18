@@ -4,7 +4,7 @@ from pathlib import Path
 from config.settings import settings
 
 from sqlalchemy.orm import Session
-from models.schemas import CustomerModel, SubscriptionModel, TransactionModel, EventModel
+from models.schemas import CustomerModel, SubscriptionModel, TransactionModel, EventModel, BusinessModel
 
 '''
 #reusable function
@@ -32,14 +32,17 @@ def get_events():
     return load_json("events.json")
 '''
 
-def get_customers(db: Session):
-    return db.query(CustomerModel).all()
+def get_business(db: Session, user_id: int):
+    return db.query(BusinessModel).filter(BusinessModel.user_id == user_id).first()
 
-def get_subscriptions(db: Session):
-    return db.query(SubscriptionModel).all()
+def get_customers(db: Session, user_id: int):
+    return db.query(CustomerModel).filter(CustomerModel.user_id == user_id).all()
 
-def get_transactions(db: Session):
-    return db.query(TransactionModel).all()
+def get_subscriptions(db: Session, user_id: int):
+    return db.query(SubscriptionModel).filter(SubscriptionModel.user_id == user_id).all()
 
-def get_events(db: Session):
-    return db.query(EventModel).all()
+def get_transactions(db: Session, user_id: int):
+    return db.query(TransactionModel).filter(TransactionModel.user_id == user_id).all()
+
+def get_events(db: Session, user_id: int):
+    return db.query(EventModel).filter(EventModel.user_id == user_id).all()

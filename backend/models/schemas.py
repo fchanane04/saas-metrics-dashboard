@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, Boolean
 from database import Base
 
 
@@ -12,6 +12,22 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+    created_at = Column(String)
+    is_active = Column(Boolean, default=True)
+
+class BusinessModel(Base):
+    __tablename__ = "businesses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, unique=True, index=True)
+    name = Column(String)
+    industry = Column(String)
+    website = Column(String, nullable=True)
+    business_model = Column(String)       # B2B or B2C
+    currency = Column(String, default="USD")
+    mrr_goal = Column(Float, nullable=True)
+    churn_threshold = Column(Float, default=5.0)
+    founded_at = Column(String, nullable=True)
     created_at = Column(String)
 
 # ── User Pydantic Schemas ──
@@ -35,11 +51,38 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+class BusinessCreate(BaseModel):
+    name: str
+    industry: str
+    website: Optional[str] = None
+    business_model: str
+    currency: str = "USD"
+    mrr_goal: Optional[float] = None
+    churn_threshold: float = 5.0
+    founded_at: Optional[str] = None
+
+class BusinessResponse(BaseModel):
+    id: int
+    user_id: int
+    name: str
+    industry: str
+    website: Optional[str] = None
+    business_model: str
+    currency: str
+    mrr_goal: Optional[float] = None
+    churn_threshold: float
+    founded_at: Optional[str] = None
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
 #sqlalchemy database models => DB tables
 class CustomerModel(Base):
     __tablename__ = "customers"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
     company_name = Column(String)
     email = Column(String, unique=True)
     country = Column(String)
@@ -51,6 +94,7 @@ class SubscriptionModel(Base):
     __tablename__ = "subscriptions"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
     customer_id = Column(Integer)
     plan = Column(String)
     price_monthly = Column(Float)
@@ -63,6 +107,7 @@ class TransactionModel(Base):
     __tablename__ = "transactions"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
     customer_id = Column(Integer)
     subscription_id = Column(Integer)
     amount = Column(Float)
@@ -75,6 +120,7 @@ class EventModel(Base):
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
     customer_id = Column(Integer)
     type = Column(String)
     date = Column(String)
@@ -82,6 +128,7 @@ class EventModel(Base):
 #pyantic => API response shape
 class Customer(BaseModel):
     id: int
+    user_id: int
     company_name: str
     email: str
     country: str
@@ -94,6 +141,7 @@ class Customer(BaseModel):
 
 class Subscription(BaseModel):
     id: int
+    user_id: int
     customer_id: int
     plan: str
     price_monthly: float
@@ -107,6 +155,7 @@ class Subscription(BaseModel):
 
 class Transaction(BaseModel):
     id: int
+    user_id: int
     customer_id: int
     subscription_id: int
     amount: float
@@ -120,6 +169,7 @@ class Transaction(BaseModel):
 
 class Event(BaseModel):
     id: int
+    user_id: int
     customer_id: int
     type: str
     date: str

@@ -1,12 +1,13 @@
 import json
 import sys
 from pathlib import Path
+from datetime import datetime
 
 #backend/
 sys.path.append(str(Path(__file__).parent))
 
 from database import Base, engine, SessionLocal
-from models.schemas import CustomerModel, SubscriptionModel, TransactionModel, EventModel
+from models.schemas import CustomerModel, SubscriptionModel, TransactionModel, EventModel, BusinessModel
 from config.settings import settings
 
 def load_json(filename: str):
@@ -20,6 +21,11 @@ def seed():
     db = SessionLocal()
 
     try:
+        businesses = load_json("businesses.json")
+        for b in businesses:
+            db.add(BusinessModel(**b))
+        print(f"Inserted {len(businesses)} businesses")
+    
         customers = load_json("customers.json")
         for c in customers:
             db.add(CustomerModel(**c))
